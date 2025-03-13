@@ -1,0 +1,387 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #007BFF;
+    padding: 20px 30px;
+    height: 90px;
+    color: white;
+}
+
+.navbar .nav-link {
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar .nav-link:hover {
+    color: #f8f9fa !important;
+    text-shadow: 0px 0px 8px rgba(255,255,255,0.8);
+    transform: scale(1.08);
+}
+
+/* Settings Button in Navbar */
+.settings-btn {
+    background: none;
+    color: white !important;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.settings-btn:hover {
+    color: #f8f9fa !important;
+    text-shadow: 0px 0px 8px rgba(255,255,255,0.8);
+    transform: scale(1.08);
+    background: none;
+}
+
+/* Override for settings-btn in dark mode so it doesn't change */
+.dark-mode .settings-btn {
+    background: none !important;
+    color: white !important;
+}
+
+/* Settings Panel */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: -320px; /* Hidden initially */
+    width: 300px;
+    height: 100vh;
+    z-index: 10000; /* Ensures it appears above everything */
+    background-color: white;
+    box-shadow: -4px 0px 10px rgba(0,0,0,0.2);
+    padding: 25px;
+    transition: right 0.4s ease-in-out;
+    border-left: 3px solid #007BFF;
+}
+
+.show-settings {
+    right: 0 !important;
+}
+
+.settings-panel h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #007BFF;
+}
+
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Close Button in Settings Panel */
+.close-settings {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #555;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.close-settings:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Language Selection Link (inside settings panel) */
+.lang-select-link {
+    font-size: 16px;
+    color: #333; /* Dark gray for visibility on white */
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+.lang-select-link:hover {
+    color: #007BFF;
+}
+
+/* Dark Mode Toggle Switch Container */
+.toggle-switch-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Toggle Switch Styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+.toggle-switch input:checked + .slider {
+    background-color: #007BFF;
+}
+.toggle-switch input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-mode .navbar {
+    background-color: #1f1f1f;
+}
+
+.dark-mode .navbar .nav-link {
+    color: #e0e0e0 !important;
+}
+
+.dark-mode .settings-panel {
+    background-color: #1f1f1f;
+    border-left: 3px solid #003f7f;  /* Darker blue tone */
+}
+
+.dark-mode .modal-content {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+}
+
+.dark-mode .container {
+    background: #1f1f1f;
+    color: #e0e0e0;
+}
+
+.dark-mode button {
+    background-color: #003f7f;  /* Darker blue tone */
+    color: #e0e0e0;
+}
+
+.dark-mode .toggle-switch input:checked + .slider {
+    background-color: #003f7f;  /* Darker blue tone */
+}
+
+/* Dark Mode Language Selection Link */
+.dark-mode .lang-select-link {
+    color: white;
+}
+.dark-mode .lang-select-link:hover {
+    color: #003f7f;  /* Darker blue on hover */
+}
+
+/* Dark Mode Input Styling */
+.dark-mode input,
+.dark-mode select {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+/* Centered Container for Main Content */
+.container {
+    max-width: 500px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: 50px auto;
+    text-align: center;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* General Button Styling */
+button {
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+button:hover {
+    background: #0056b3;
+}
+
+/* Alert Styling */
+.alert {
+    margin-top: 10px;
+}
+
+/* Error Message */
+p.error {
+    color: red;
+    font-weight: bold;
+}
+
+/* Center Login Box */
+.login-container {
+    max-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: auto;
+    margin-top: 100px;
+    text-align: center;
+}
+
+/* Modal Background */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Modal Box */
+.modal-content {
+    background-color: white;
+    padding: 30px 50px;
+    border-radius: 12px;
+    width: 300px !important;
+    max-width: 90%;
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.3);
+    text-align: center;
+    position: relative;
+}
+
+/* Modal Close Button */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #555;
+    padding: 5px 10px;
+    border-radius: 50%;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+.close:hover {
+    color: white;
+    background-color: #dc3545;
+}
+
+/* ========================= */
+/* New History Page Styling  */
+/* ========================= */
+
+/* Container for the history page */
+.history-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+/* Each history entry styled as a card */
+.history-entry {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    transition: background 0.3s ease-in-out;
+}
+
+.history-entry:hover {
+    background: #e9ecef;
+}
+
+/* Heading within each history entry */
+.history-entry h5 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #007BFF;
+}
+
+/* Paragraph text for details */
+.history-entry p {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Timestamp styling */
+.history-entry small {
+    display: block;
+    color: #888;
+}

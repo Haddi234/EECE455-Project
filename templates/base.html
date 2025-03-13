@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ _('Polynomial Arithmetic') }}{% endblock %}</title>
+  
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">{{ _('Polynomial Arithmetic') }}</a>
+      <div class="navbar-nav ms-auto nav-links">
+        {% if current_user == 'guest' %}
+          <a href="#" class="nav-link" onclick="showAccessDenied(); return false;">{{ _('History') }}</a>
+          <a href="{{ url_for('login') }}" class="nav-link">{{ _('Login/Signup') }}</a>
+        {% else %}
+          <a href="{{ url_for('history') }}" class="nav-link">{{ _('History') }}</a>
+          <a href="{{ url_for('logout') }}" class="nav-link">{{ _('Logout') }}</a>
+        {% endif %}
+        <a href="#" class="nav-link">{{ _('About') }}</a>
+        <button class="settings-btn" onclick="toggleSettings()">{{ _('Settings') }}</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Settings Panel -->
+  <div class="settings-panel">
+    <div class="settings-content">
+      <button class="close-settings" onclick="toggleSettings()">&times;</button>
+      <h3>⚙️ {{ _('Settings') }}</h3>
+      <!-- Language Selection as a link -->
+      <p>
+        <a href="#" id="langToggle" onclick="toggleLanguageList()" class="lang-select-link">
+          {{ _('Language Selection') }}
+        </a>
+      </p>
+      <!-- Hidden container for language list -->
+      <div id="languageList" style="display: none; margin-bottom: 15px;">
+        <a href="{{ url_for('set_language', lang_code='en') }}">English</a> |
+        <a href="{{ url_for('set_language', lang_code='es') }}">Español</a> |
+        <a href="{{ url_for('set_language', lang_code='fr') }}">Français</a> |
+        <a href="{{ url_for('set_language', lang_code='ar') }}">العربية</a>
+      </div>
+      <!-- Dark Mode Toggle Switch -->
+      <div class="toggle-switch-container">
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+        <span id="darkModeLabel">{{ _('Dark Mode: Off') }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Denied Modal -->
+  <div id="accessDeniedModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeAccessDenied()">&times;</button>
+      <h3>{{ _('Access Denied') }}</h3>
+      <p>{{ _('You need to log in or sign up to perform this action.') }}</p>
+      <a href="{{ url_for('login') }}" class="btn btn-primary">{{ _('Login/Signup') }}</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Common Scripts -->
+  <script>
+    function toggleSettings() {
+      let settingsPanel = document.querySelector(".settings-panel");
+      settingsPanel.classList.toggle("show-settings");
+    }
+    
+    function toggleLanguageList() {
+      let languageList = document.getElementById("languageList");
+      if (languageList.style.display === "none" || languageList.style.display === "") {
+        languageList.style.display = "block";
+      } else {
+        languageList.style.display = "none";
+      }
+    }
+    
+    function toggleDarkMode() {
+      let body = document.body;
+      let isDark = body.classList.toggle("dark-mode");
+      localStorage.setItem("darkMode", isDark ? "true" : "false");
+      let label = document.getElementById("darkModeLabel");
+      if (label) {
+        label.innerText = isDark ? "{{ _('Dark Mode: On') }}" : "{{ _('Dark Mode: Off') }}";
+      }
+    }
+    
+    function showAccessDenied() {
+      document.getElementById("accessDeniedModal").style.display = "flex";
+    }
+    
+    function closeAccessDenied() {
+      document.getElementById("accessDeniedModal").style.display = "none";
+    }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        let label = document.getElementById("darkModeLabel");
+        if (label) {
+          label.innerText = "{{ _('Dark Mode: On') }}";
+        }
+        let darkToggle = document.getElementById("darkModeToggle");
+        if (darkToggle) darkToggle.checked = true;
+      }
+      
+      window.onclick = function(event) {
+        let modal = document.getElementById("accessDeniedModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,183 @@
+# French translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-08 12:53+0200\n"
+"PO-Revision-Date: 2025-03-08 12:57+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app.py:48
+msgid "Invalid username or password"
+msgstr "Nom d'utilisateur ou mot de passe invalide"
+
+#: app.py:72
+msgid "Unauthorized: Please log in first"
+msgstr "Non autorisé : Veuillez vous connecter d'abord"
+
+#: app.py:101
+msgid "Binary coefficients must be a single digit: 0 or 1."
+msgstr "Les coefficients binaires doivent être un seul chiffre : 0 ou 1."
+
+#: app.py:107
+msgid "Hexadecimal coefficients must only contain characters 0-9 and A-F."
+msgstr "Les coefficients hexadécimaux doivent contenir uniquement les caractères 0-9 et A-F."
+
+#: app.py:113
+msgid "Decimal coefficients must only contain digits 0-9."
+msgstr "Les coefficients décimaux doivent contenir uniquement des chiffres de 0 à 9."
+
+#: app.py:117
+msgid "Invalid coefficient format specified."
+msgstr "Format de coefficient spécifié invalide."
+
+#: app.py:144
+msgid "Division by zero is not allowed"
+msgstr "La division par zéro n'est pas autorisée"
+
+#: app.py:148
+msgid "Zero has no multiplicative inverse"
+msgstr "Le zéro n'a pas d'inverse multiplicatif"
+
+#: app.py:151
+msgid "Invalid operation"
+msgstr "Opération invalide"
+
+#: app.py:190
+msgid "Please log in or sign up to view history"
+msgstr "Veuillez vous connecter ou vous inscrire pour voir l'historique"
+
+#: app.py:192
+msgid "Guests cannot access history. Please log in or sign up."
+msgstr "Les invités ne peuvent pas accéder à l'historique. Veuillez vous connecter ou vous inscrire."
+
+#: app.py:194
+msgid "This is where history would be"
+msgstr "C'est ici que l'historique apparaîtra"
+
+#: templates/index.html:6 templates/index.html:16
+msgid "Polynomial Arithmetic"
+msgstr "Arithmétique polynomiale"
+
+#: templates/index.html:18
+msgid "History"
+msgstr "Historique"
+
+#: templates/index.html:20 templates/index.html:65
+msgid "Login/Signup"
+msgstr "Connexion/Inscription"
+
+#: templates/index.html:22
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: templates/index.html:24
+msgid "About"
+msgstr "À propos"
+
+#: templates/index.html:25 templates/index.html:34
+msgid "Settings"
+msgstr "Paramètres"
+
+#: templates/index.html:38
+msgid "Language Selection"
+msgstr "Sélection de la langue"
+
+#: templates/index.html:54 templates/index.html:180
+msgid "Dark Mode: Off"
+msgstr "Mode sombre : Désactivé"
+
+#: templates/index.html:63
+msgid "Access Denied"
+msgstr "Accès refusé"
+
+#: templates/index.html:64
+msgid "You need to log in or sign up to perform this action."
+msgstr "Vous devez vous connecter ou vous inscrire pour effectuer cette action."
+
+#: templates/index.html:71
+msgid "GF(2^m) Arithmetic Calculator"
+msgstr "Calculatrice arithmétique GF(2^m)"
+
+#: templates/index.html:75
+msgid "Field Degree (m):"
+msgstr "Degré du champ (m) :"
+
+#: templates/index.html:85
+msgid "Polynomial Degree:"
+msgstr "Degré du polynôme :"
+
+#: templates/index.html:95
+msgid "Coefficient Format:"
+msgstr "Format du coefficient :"
+
+#: templates/index.html:97 templates/index.html:126
+msgid "Binary"
+msgstr "Binaire"
+
+#: templates/index.html:98 templates/index.html:127
+msgid "Hexadecimal"
+msgstr "Hexadécimal"
+
+#: templates/index.html:99
+msgid "Decimal"
+msgstr "Décimal"
+
+#: templates/index.html:109
+msgid "Select Operation:"
+msgstr "Sélectionnez l'opération :"
+
+#: templates/index.html:111
+msgid "Addition"
+msgstr "Addition"
+
+#: templates/index.html:112
+msgid "Subtraction"
+msgstr "Soustraction"
+
+#: templates/index.html:113
+msgid "Multiplication"
+msgstr "Multiplication"
+
+#: templates/index.html:114
+msgid "Division"
+msgstr "Division"
+
+#: templates/index.html:115
+msgid "Inverse"
+msgstr "Inverse"
+
+#: templates/index.html:124
+msgid "Output Format:"
+msgstr "Format de sortie :"
+
+#: templates/index.html:128
+msgid "Polynomial"
+msgstr "Polynôme"
+
+#: templates/index.html:134
+msgid "Perform Operation"
+msgstr "Effectuer l'opération"
+
+#: templates/index.html:144
+msgid "Enter Coefficients for Polynomial A:"
+msgstr "Entrez les coefficients pour le polynôme A :"
+
+#: templates/index.html:145
+msgid "Enter Coefficients for Polynomial B:"
+msgstr "Entrez les coefficients pour le polynôme B :"
+
+#: templates/index.html:178
+msgid "Dark Mode: On"
+msgstr "Mode sombre : Activé"

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ _('Login - GF(2^m) Arithmetic') }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>{{ _('Login') }}</h1>
+        
+        <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flashes">
+              {% for message in messages %}
+                <li class="error">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        
+        <form method="POST">
+            <label for="username">{{ _('Username:') }}</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">{{ _('Password:') }}</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">{{ _('Login') }}</button>
+        </form>
+        
+        <hr>
+        
+        <p>{{ _("Don't have an account?") }} <a href="{{ url_for('signup') }}">{{ _('Signup here') }}</a></p>
+    </div>
+</body>
+</html>

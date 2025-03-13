@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Your Operation History') }}{% endblock %}
+
+{% block content %}
+  <div class="history-container">
+    <h2>{{ _('Operation History') }}</h2>
+    {% if history %}
+      {% for entry in history %}
+        <div class="history-entry">
+          <h5>{{ _('Operation:') }} {{ entry.operation }}</h5>
+          <p>{{ _('Field Degree:') }} {{ entry.field_degree }}, {{ _('Polynomial Degree:') }} {{ entry.poly_degree }}</p>
+          <p>{{ _('Coefficient Format:') }} {{ entry.coefficient_format }}, {{ _('Output Format:') }} {{ entry.output_format }}</p>
+          <p>{{ _('Coefficients A:') }} {{ entry.coefficients_A }}</p>
+          {% if entry.coefficients_B %}
+            <p>{{ _('Coefficients B:') }} {{ entry.coefficients_B }}</p>
+          {% endif %}
+          <p>{{ _('Result:') }} {{ entry.result }}</p>
+          <small>{{ entry.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>{{ _('No history found.') }}</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">{{ _('Back to Calculator') }}</a>
+  </div>
+{% endblock %}

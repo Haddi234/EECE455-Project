@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('GF(2^m) Arithmetic Calculator') }}{% endblock %}
+
+{% block content %}
+  <h2 class="text-center">{{ _('GF(2^m) Arithmetic Calculator') }}</h2>
+
+  <!-- Field Degree Selection -->
+  <div class="mb-3">
+    <label for="fieldDegree" class="form-label">{{ _('Field Degree (m):') }}</label>
+    <select id="fieldDegree" name="fieldDegree" class="form-select">
+      {% for i in range(2, 9) %}
+        <option value="{{ i }}">{{ i }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Polynomial Degree Selection -->
+  <div class="mb-3">
+    <label for="degree" class="form-label">{{ _('Polynomial Degree:') }}</label>
+    <select id="degree" name="degree" class="form-select" onchange="generatePolynomialInput()">
+      {% for i in range(1, 16) %}
+        <option value="{{ i }}">{{ i }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Coefficient Format Selection -->
+  <div class="mb-3">
+    <label for="coefficientFormat" class="form-label">{{ _('Coefficient Format:') }}</label>
+    <select id="coefficientFormat" name="coefficientFormat" class="form-select" onchange="generatePolynomialInput()">
+      <option value="bin">{{ _('Binary (Individual Inputs)') }}</option>
+      <option value="hex">{{ _('Hexadecimal (Individual Inputs)') }}</option>
+      <option value="dec">{{ _('Decimal (Individual Inputs)') }}</option>
+      <option value="direct_bin">{{ _('Direct Binary') }}</option>
+      <option value="direct_hex">{{ _('Direct Hexadecimal') }}</option>
+    </select>
+  </div>
+
+  <!-- Polynomial Input Fields -->
+  <div id="polynomialInputContainer" class="mb-3"></div>
+  <div id="polynomialInputContainerB" class="mb-3" style="display: none;"></div>
+
+  <!-- Operation Selection -->
+  <div class="mb-3">
+    <label for="operation" class="form-label">{{ _('Select Operation:') }}</label>
+    <select id="operation" name="operation" class="form-select" onchange="toggleInputs()">
+      <option value="1">{{ _('Addition') }}</option>
+      <option value="2">{{ _('Subtraction') }}</option>
+      <option value="3">{{ _('Multiplication') }}</option>
+      <option value="4">{{ _('Division') }}</option>
+      <option value="5">{{ _('Inverse') }}</option>
+    </select>
+  </div>
+
+  <!-- Result Display -->
+  <div id="result" class="alert alert-info text-center" style="display: none;"></div>
+
+  <!-- Output Format Selection -->
+  <div class="mb-3">
+    <label for="outputFormat" class="form-label">{{ _('Output Format:') }}</label>
+    <select id="outputFormat" name="outputFormat" class="form-select">
+      <option value="bin">{{ _('Binary') }}</option>
+      <option value="hex">{{ _('Hexadecimal') }}</option>
+      <option value="poly">{{ _('Polynomial') }}</option>
+    </select>
+  </div>
+
+  <!-- Perform Operation Button -->
+  <button type="button" class="btn btn-primary w-100" onclick="performOperation()">
+    {{ _('Perform Operation') }}
+  </button>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Helper: Convert a number to Unicode superscript (e.g., 3 -> ³)
+  function toSuperscript(num) {
+    const supMap = {
+      '0': '⁰',
+      '1': '¹',
+      '2': '²',
+      '3': '³',
+      '4': '⁴',
+      '5': '⁵',
+      '6': '⁶',
+      '7': '⁷',
+      '8': '⁸',
+      '9': '⁹'
+    };
+    return num.toString().split('').map(d => supMap[d] || d).join('');
+  }
+
+  // Generate coefficient inputs based on selected format.
+  function generatePolynomialInput() {
+    let degree = parseInt(document.getElementById("degree").value);
+    let coeffFormat = String(document.getElementById("coefficientFormat").value).trim().toLowerCase();
+    let containerA = document.getElementById("polynomialInputContainer");
+    let containerB = document.getElementById("polynomialInputContainerB");
+    containerA.innerHTML = "";
+    containerB.innerHTML = "";
+
+    if (coeffFormat === "direct_bin" || coeffFormat === "direct_hex") {
+      let labelA = document.createElement("label");
+      labelA.className = "form-label";
+      if (coeffFormat === "direct_bin") {
+        labelA.innerText = "Enter coefficients for Polynomial A as a binary string (length = " + (degree + 1) + ")";
+      } else {
+        let reqHex = Math.ceil((degree + 1) / 4);
+        labelA.innerText = "Enter coefficients for Polynomial A as a hexadecimal string (length = " + reqHex + ")";
+      }
+      containerA.appendChild(labelA);
+      containerA.appendChild(document.createElement("br"));
+
+      let inputA = document.createElement("input");
+      inputA.type = "text";
+      inputA.className = "poly-coeff";
+      inputA.id = "coeffA_direct";
+      inputA.style.width = "150px";
+      inputA.maxLength = coeffFormat === "direct_bin" ? degree + 1 : Math.ceil((degree + 1) / 4);
+      containerA.appendChild(inputA);
+
+      if (document.getElementById("operation").value !== "5") {
+        let labelB = document.createElement("label");
+        labelB.className = "form-label";
+        if (coeffFormat === "direct_bin") {
+          labelB.innerText = "Enter coefficients for Polynomial B as a binary string (length = " + (degree + 1) + ")";
+        } else {
+          let reqHex = Math.ceil((degree + 1) / 4);
+          labelB.innerText = "Enter coefficients for Polynomial B as a hexadecimal string (length = " + reqHex + ")";
+        }
+        containerB.appendChild(labelB);
+        containerB.appendChild(document.createElement("br"));
+
+        let inputB = document.createElement("input");
+        inputB.type = "text";
+        inputB.className = "poly-coeff";
+        inputB.id = "coeffB_direct";
+        inputB.style.width = "150px";
+        inputB.maxLength = coeffFormat === "direct_bin" ? degree + 1 : Math.ceil((degree + 1) / 4);
+        containerB.appendChild(inputB);
+      }
+    } else {
+      let labelA = document.createElement("label");
+      labelA.className = "form-label";
+      labelA.innerText = "{{ _('Enter Coefficients for Polynomial A:') }}";
+      containerA.appendChild(labelA);
+      containerA.appendChild(document.createElement("br"));
+
+      let labelB = document.createElement("label");
+      labelB.className = "form-label";
+      labelB.innerText = "{{ _('Enter Coefficients for Polynomial B:') }}";
+      containerB.appendChild(labelB);
+      containerB.appendChild(document.createElement("br"));
+
+      for (let i = degree; i >= 0; i--) {
+        let inputA = document.createElement("input");
+        inputA.type = "text";
+        inputA.className = "poly-coeff";
+        inputA.id = "coeffA_" + i;
+        inputA.style.width = "50px";
+        inputA.addEventListener("keydown", function(event) {
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            let next = document.getElementById("coeffA_" + (i - 1));
+            if (next) next.focus();
+          }
+        });
+        containerA.appendChild(inputA);
+
+        let spanA = document.createElement("span");
+        spanA.innerText = " x" + toSuperscript(i);
+        containerA.appendChild(spanA);
+
+        if (i > 0) {
+          containerA.appendChild(document.createTextNode(" + "));
+        }
+
+        let inputB = document.createElement("input");
+        inputB.type = "text";
+        inputB.className = "poly-coeff";
+        inputB.id = "coeffB_" + i;
+        inputB.style.width = "50px";
+        inputB.addEventListener("keydown", function(event) {
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            let next = document.getElementById("coeffB_" + (i - 1));
+            if (next) next.focus();
+          }
+        });
+        containerB.appendChild(inputB);
+
+        let spanB = document.createElement("span");
+        spanB.innerText = " x" + toSuperscript(i);
+        containerB.appendChild(spanB);
+
+        if (i > 0) {
+          containerB.appendChild(document.createTextNode(" + "));
+        }
+      }
+    }
+  }
+  
+  function toggleInputs() {
+    let operation = document.getElementById("operation").value;
+    let containerB = document.getElementById("polynomialInputContainerB");
+    containerB.style.display = (operation === "5") ? "none" : "block";
+  }
+  
+  function performOperation() {
+    console.log("🔹 performOperation() triggered!");
+  
+    let fieldDegree = document.getElementById("fieldDegree")?.value;
+    let degree = parseInt(document.getElementById("degree")?.value);
+    let coefficientFormat = String(document.getElementById("coefficientFormat").value).trim().toLowerCase();
+    console.log("coefficientFormat:", coefficientFormat);
+    let outputFormat = document.getElementById("outputFormat")?.value;
+    let operation = document.getElementById("operation")?.value;
+  
+    if (!fieldDegree || !degree || !coefficientFormat || !outputFormat || !operation) {
+      console.error("❌ Missing input values!", { fieldDegree, degree, coefficientFormat, outputFormat, operation });
+      alert("Error: One or more input fields are missing!");
+      return;
+    }
+  
+    console.log("✔️ Inputs collected:", { fieldDegree, degree, coefficientFormat, outputFormat, operation });
+  
+    let processed_A;
+    let processed_B;
+  
+    if (coefficientFormat === "direct_bin") {
+      let inputA = document.getElementById("coeffA_direct").value;
+      inputA = String(inputA).trim();
+      if (inputA.length !== degree + 1) {
+        alert("Error: The binary string must be exactly " + (degree + 1) + " digits long.");
+        return;
+      }
+      if (!/^[01]+$/.test(inputA)) {
+        alert("Error: The binary string must contain only 0s and 1s.");
+        return;
+      }
+      processed_A = inputA.split('').map(Number);
+  
+      if (operation !== "5") {
+        let inputB = document.getElementById("coeffB_direct").value;
+        inputB = String(inputB).trim();
+        if (inputB.length !== degree + 1) {
+          alert("Error: The binary string must be exactly " + (degree + 1) + " digits long.");
+          return;
+        }
+        if (!/^[01]+$/.test(inputB)) {
+          alert("Error: The binary string must contain only 0s and 1s.");
+          return;
+        }
+        processed_B = inputB.split('').map(Number);
+      }
+    } else if (coefficientFormat === "direct_hex") {
+      let reqHexDigits = Math.ceil((degree + 1) / 4);
+      let inputA = document.getElementById("coeffA_direct").value;
+      inputA = String(inputA).trim();
+      if (inputA.length !== reqHexDigits) {
+        alert("Error: The hexadecimal string must be exactly " + reqHexDigits + " digits long.");
+        return;
+      }
+      if (!/^[0-9A-Fa-f]+$/.test(inputA)) {
+        alert("Error: The hexadecimal string must contain only 0-9 and A-F.");
+        return;
+      }
+      let valA = parseInt(inputA, 16);
+      let binA = valA.toString(2).padStart(reqHexDigits * 4, '0');
+      if (binA.length > degree + 1) {
+        let extra = binA.length - (degree + 1);
+        if (/^0+$/.test(binA.substring(0, extra))) {
+          binA = binA.substring(extra);
+        } else {
+          alert("Error: The hexadecimal value represents more coefficients than the degree.");
+          return;
+        }
+      } else if (binA.length < degree + 1) {
+        binA = binA.padStart(degree + 1, '0');
+      }
+      processed_A = binA.split('').map(Number);
+  
+      if (operation !== "5") {
+        let inputB = document.getElementById("coeffB_direct").value;
+        inputB = String(inputB).trim();
+        if (inputB.length !== reqHexDigits) {
+          alert("Error: The hexadecimal string must be exactly " + reqHexDigits + " digits long.");
+          return;
+        }
+        if (!/^[0-9A-Fa-f]+$/.test(inputB)) {
+          alert("Error: The hexadecimal string must contain only 0-9 and A-F.");
+          return;
+        }
+        let valB = parseInt(inputB, 16);
+        let binB = valB.toString(2).padStart(reqHexDigits * 4, '0');
+        if (binB.length > degree + 1) {
+          let extra = binB.length - (degree + 1);
+          if (/^0+$/.test(binB.substring(0, extra))) {
+            binB = binB.substring(extra);
+          } else {
+            alert("Error: The hexadecimal value represents more coefficients than the degree.");
+            return;
+          }
+        } else if (binB.length < degree + 1) {
+          binB = binB.padStart(degree + 1, '0');
+        }
+        processed_B = binB.split('').map(Number);
+      }
+    } else {
+      function convert_coefficients(coeffs, format_type) {
+        let processed = [];
+        for (let coeff of coeffs) {
+          coeff = String(coeff).trim() || "0";
+          if (format_type === "bin") {
+            if (!/^[01]$/.test(coeff)) {
+              throw new Error("Binary coefficients must be a single digit: 0 or 1.");
+            }
+            processed.push(parseInt(coeff, 2));
+          } else if (format_type === "hex") {
+            if (!/^[0-9A-Fa-f]+$/.test(coeff)) {
+              throw new Error("Hexadecimal coefficients must only contain characters 0-9 and A-F.");
+            }
+            processed.push(parseInt(coeff, 16) % 2);
+          } else if (format_type === "dec") {
+            if (!/^\d+$/.test(coeff)) {
+              throw new Error("Decimal coefficients must only contain digits 0-9.");
+            }
+            processed.push(parseInt(coeff, 10) % 2);
+          } else {
+            throw new Error("Invalid coefficient format specified.");
+          }
+        }
+        return processed;
+      }
+      let coeffsA = [];
+      let coeffsB = [];
+      if (operation === "5") {
+        for (let i = degree; i >= 0; i--) {
+          let value = document.getElementById("coeffA_" + i).value;
+          coeffsA.push(value);
+        }
+        processed_A = convert_coefficients(coeffsA, coefficientFormat);
+      } else {
+        for (let i = degree; i >= 0; i--) {
+          let valueA = document.getElementById("coeffA_" + i).value;
+          let valueB = document.getElementById("coeffB_" + i).value;
+          coeffsA.push(valueA);
+          coeffsB.push(valueB);
+        }
+        processed_A = convert_coefficients(coeffsA, coefficientFormat);
+        processed_B = convert_coefficients(coeffsB, coefficientFormat);
+      }
+    }
+  
+    console.log("✔️ Processed coefficients for A:", processed_A);
+    console.log("✔️ Processed coefficients for B:", processed_B);
+  
+    fetch('/perform_operation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fieldDegree: fieldDegree,
+        degree: degree,
+        coefficientFormat: coefficientFormat,
+        outputFormat: outputFormat,
+        operation: operation,
+        coefficientsA: processed_A,
+        coefficientsB: processed_B
+      })
+    })
+    .then(response => {
+      console.log("✔️ Fetch request sent! Waiting for response...");
+      return response.json();
+    })
+    .then(data => {
+      console.log("✔️ Response received:", data);
+      if (data.error) {
+        document.getElementById("result").innerText = "Error: " + data.error;
+      } else {
+        document.getElementById("result").innerText = `Result: ${data.result}`;
+      }
+      document.getElementById("result").style.display = "block";
+    })
+    .catch(error => {
+      console.error("❌ Fetch error:", error);
+      document.getElementById("result").innerText = "An error occurred.";
+      document.getElementById("result").style.display = "block";
+    });
+  }
+</script>
+{% endblock %}

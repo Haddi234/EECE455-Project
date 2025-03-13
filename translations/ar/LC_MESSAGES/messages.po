@@ -1,0 +1,183 @@
+# Arabic translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-03-08 12:53+0200\n"
+"PO-Revision-Date: 2025-03-08 12:54+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ar\n"
+"Language-Team: ar <LL@li.org>\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=0 && n%100<=2 ? 4 : 5);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app.py:48
+msgid "Invalid username or password"
+msgstr "اسم المستخدم أو كلمة المرور غير صحيحة"
+
+#: app.py:72
+msgid "Unauthorized: Please log in first"
+msgstr "غير مصرح: يرجى تسجيل الدخول أولاً"
+
+#: app.py:101
+msgid "Binary coefficients must be a single digit: 0 or 1."
+msgstr "يجب أن تكون المعاملات الثنائية رقمًا واحدًا فقط: 0 أو 1."
+
+#: app.py:107
+msgid "Hexadecimal coefficients must only contain characters 0-9 and A-F."
+msgstr "يجب أن تحتوي المعاملات السداسية عشرية على الأحرف من 0 إلى 9 و A-F فقط."
+
+#: app.py:113
+msgid "Decimal coefficients must only contain digits 0-9."
+msgstr "يجب أن تحتوي المعاملات العشرية على أرقام من 0 إلى 9 فقط."
+
+#: app.py:117
+msgid "Invalid coefficient format specified."
+msgstr "تم تحديد تنسيق معامل غير صالح."
+
+#: app.py:144
+msgid "Division by zero is not allowed"
+msgstr "القسمة على صفر غير مسموح بها"
+
+#: app.py:148
+msgid "Zero has no multiplicative inverse"
+msgstr "الصفر ليس له معكوس ضرب"
+
+#: app.py:151
+msgid "Invalid operation"
+msgstr "عملية غير صالحة"
+
+#: app.py:190
+msgid "Please log in or sign up to view history"
+msgstr "يرجى تسجيل الدخول أو الاشتراك لعرض السجل"
+
+#: app.py:192
+msgid "Guests cannot access history. Please log in or sign up."
+msgstr "الضيوف لا يمكنهم الوصول إلى السجل. يرجى تسجيل الدخول أو الاشتراك."
+
+#: app.py:194
+msgid "This is where history would be"
+msgstr "هنا سيكون السجل"
+
+#: templates/index.html:6 templates/index.html:16
+msgid "Polynomial Arithmetic"
+msgstr "الحساب المتعدد الحدود"
+
+#: templates/index.html:18
+msgid "History"
+msgstr "السجل"
+
+#: templates/index.html:20 templates/index.html:65
+msgid "Login/Signup"
+msgstr "تسجيل الدخول/الاشتراك"
+
+#: templates/index.html:22
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+#: templates/index.html:24
+msgid "About"
+msgstr "حول"
+
+#: templates/index.html:25 templates/index.html:34
+msgid "Settings"
+msgstr "الإعدادات"
+
+#: templates/index.html:38
+msgid "Language Selection"
+msgstr "اختيار اللغة"
+
+#: templates/index.html:54 templates/index.html:180
+msgid "Dark Mode: Off"
+msgstr "الوضع الداكن: إيقاف"
+
+#: templates/index.html:63
+msgid "Access Denied"
+msgstr "تم الرفض"
+
+#: templates/index.html:64
+msgid "You need to log in or sign up to perform this action."
+msgstr "يجب عليك تسجيل الدخول أو الاشتراك للقيام بهذا الإجراء."
+
+#: templates/index.html:71
+msgid "GF(2^m) Arithmetic Calculator"
+msgstr "آلة حاسبة للحساب GF(2^m)"
+
+#: templates/index.html:75
+msgid "Field Degree (m):"
+msgstr "درجة الحقل (m):"
+
+#: templates/index.html:85
+msgid "Polynomial Degree:"
+msgstr "درجة الحدود المتعددة:"
+
+#: templates/index.html:95
+msgid "Coefficient Format:"
+msgstr "تنسيق المعامل:"
+
+#: templates/index.html:97 templates/index.html:126
+msgid "Binary"
+msgstr "ثنائي"
+
+#: templates/index.html:98 templates/index.html:127
+msgid "Hexadecimal"
+msgstr "سداسي عشري"
+
+#: templates/index.html:99
+msgid "Decimal"
+msgstr "عشري"
+
+#: templates/index.html:109
+msgid "Select Operation:"
+msgstr "اختر العملية:"
+
+#: templates/index.html:111
+msgid "Addition"
+msgstr "جمع"
+
+#: templates/index.html:112
+msgid "Subtraction"
+msgstr "طرح"
+
+#: templates/index.html:113
+msgid "Multiplication"
+msgstr "ضرب"
+
+#: templates/index.html:114
+msgid "Division"
+msgstr "قسمة"
+
+#: templates/index.html:115
+msgid "Inverse"
+msgstr "معكوس"
+
+#: templates/index.html:124
+msgid "Output Format:"
+msgstr "تنسيق الإخراج:"
+
+#: templates/index.html:128
+msgid "Polynomial"
+msgstr "متعدد الحدود"
+
+#: templates/index.html:134
+msgid "Perform Operation"
+msgstr "تنفيذ العملية"
+
+#: templates/index.html:144
+msgid "Enter Coefficients for Polynomial A:"
+msgstr "أدخل المعاملات للحد A:"
+
+#: templates/index.html:145
+msgid "Enter Coefficients for Polynomial B:"
+msgstr "أدخل المعاملات للحد B:"
+
+#: templates/index.html:178
+msgid "Dark Mode: On"
+msgstr "الوضع الداكن: تشغيل"

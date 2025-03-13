@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ _('Polynomial Arithmetic') }}</title>
+  
+  <!-- Link to CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">{{ _('Polynomial Arithmetic') }}</a>
+      <div class="navbar-nav ms-auto nav-links">
+        <a href="#" class="nav-link" onclick="fetchHistory(); return false;">{{ _('History') }}</a>
+        {% if user == 'guest' %}
+          <a href="{{ url_for('login') }}" class="nav-link">{{ _('Login/Signup') }}</a>
+        {% else %}
+          <a href="{{ url_for('logout') }}" class="nav-link">{{ _('Logout') }}</a>
+        {% endif %}
+        <a href="#" class="nav-link">{{ _('About') }}</a>
+        <button class="settings-btn" onclick="toggleSettings()">{{ _('Settings') }}</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Settings Panel -->
+  <div class="settings-panel">
+    <div class="settings-content">
+      <button class="close-settings" onclick="toggleSettings()">&times;</button>
+      <h3>⚙️ {{ _('Settings') }}</h3>
+      <!-- Language Selection as a link -->
+      <p>
+        <a href="#" id="langToggle" onclick="toggleLanguageList()" class="lang-select-link">
+          {{ _('Language Selection') }}
+        </a>
+      </p>
+      <!-- Hidden container for language list -->
+      <div id="languageList" style="display: none; margin-bottom: 15px;">
+        <a href="{{ url_for('set_language', lang_code='en') }}">English</a> |
+        <a href="{{ url_for('set_language', lang_code='es') }}">Español</a> |
+        <a href="{{ url_for('set_language', lang_code='fr') }}">Français</a> |
+        <a href="{{ url_for('set_language', lang_code='ar') }}">العربية</a>
+      </div>
+      <!-- Dark Mode Toggle Switch -->
+      <div class="toggle-switch-container">
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+          <span class="slider"></span>
+        </label>
+        <span id="darkModeLabel">{{ _('Dark Mode: Off') }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Denied Modal -->
+  <div id="accessDeniedModal" class="modal">
+    <div class="modal-content">
+      <button class="close" onclick="closeAccessDenied()">&times;</button>
+      <h3>{{ _('Access Denied') }}</h3>
+      <p>{{ _('You need to log in or sign up to perform this action.') }}</p>
+      <a href="{{ url_for('login') }}" class="btn btn-primary">{{ _('Login/Signup') }}</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
+    <h2 class="text-center">{{ _('GF(2^m) Arithmetic Calculator') }}</h2>
+
+    <!-- Field Degree Selection -->
+    <div class="mb-3">
+      <label for="fieldDegree" class="form-label">{{ _('Field Degree (m):') }}</label>
+      <select id="fieldDegree" name="fieldDegree" class="form-select">
+        {% for i in range(2, 9) %}
+          <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Polynomial Degree Selection -->
+    <div class="mb-3">
+      <label for="degree" class="form-label">{{ _('Polynomial Degree:') }}</label>
+      <select id="degree" name="degree" class="form-select" onchange="generatePolynomialInput()">
+        {% for i in range(1, 16) %}
+          <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Coefficient Format Selection -->
+    <div class="mb-3">
+      <label for="coefficientFormat" class="form-label">{{ _('Coefficient Format:') }}</label>
+      <select id="coefficientFormat" name="coefficientFormat" class="form-select">
+        <option value="bin">{{ _('Binary') }}</option>
+        <option value="hex">{{ _('Hexadecimal') }}</option>
+        <option value="dec">{{ _('Decimal') }}</option>
+      </select>
+    </div>
+
+    <!-- Polynomial Input Fields -->
+    <div id="polynomialInputContainer" class="mb-3"></div>
+    <div id="polynomialInputContainerB" class="mb-3" style="display: none;"></div>
+
+    <!-- Operation Selection -->
+    <div class="mb-3">
+      <label for="operation" class="form-label">{{ _('Select Operation:') }}</label>
+      <select id="operation" name="operation" class="form-select" onchange="toggleInputs()">
+        <option value="1">{{ _('Addition') }}</option>
+        <option value="2">{{ _('Subtraction') }}</option>
+        <option value="3">{{ _('Multiplication') }}</option>
+        <option value="4">{{ _('Division') }}</option>
+        <option value="5">{{ _('Inverse') }}</option>
+      </select>
+    </div>
+
+    <!-- Result Display -->
+    <div id="result" class="alert alert-info text-center" style="display: none;"></div>
+
+    <!-- Output Format Selection -->
+    <div class="mb-3">
+      <label for="outputFormat" class="form-label">{{ _('Output Format:') }}</label>
+      <select id="outputFormat" name="outputFormat" class="form-select">
+        <option value="bin">{{ _('Binary') }}</option>
+        <option value="hex">{{ _('Hexadecimal') }}</option>
+        <option value="poly">{{ _('Polynomial') }}</option>
+      </select>
+    </div>
+
+    <!-- Perform Operation Button -->
+    <button type="button" class="btn btn-primary w-100" onclick="performOperation()">
+      {{ _('Perform Operation') }}
+    </button>
+  </div>
+
+  <script>
+    // Helper: Convert number to Unicode superscript (e.g., 3 -> ³)
+    function toSuperscript(num) {
+      const supMap = {
+        '0': '⁰',
+        '1': '¹',
+        '2': '²',
+        '3': '³',
+        '4': '⁴',
+        '5': '⁵',
+        '6': '⁶',
+        '7': '⁷',
+        '8': '⁸',
+        '9': '⁹'
+      };
+      return num.toString().split('').map(d => supMap[d] || d).join('');
+    }
+
+    // Generate coefficient inputs with smaller boxes and a degree label in superscript next to each input.
+    // Also, pressing Space or Enter moves focus to the next coefficient input.
+    function generatePolynomialInput() {
+      let degree = parseInt(document.getElementById("degree").value);
+      let containerA = document.getElementById("polynomialInputContainer");
+      let containerB = document.getElementById("polynomialInputContainerB");
+
+      // Clear previous content
+      containerA.innerHTML = "";
+      containerB.innerHTML = "";
+
+      // Add label for Polynomial A and B
+      let labelA = document.createElement("label");
+      labelA.className = "form-label";
+      labelA.innerText = "{{ _('Enter Coefficients for Polynomial A:') }}";
+      containerA.appendChild(labelA);
+      containerA.appendChild(document.createElement("br"));
+
+      let labelB = document.createElement("label");
+      labelB.className = "form-label";
+      labelB.innerText = "{{ _('Enter Coefficients for Polynomial B:') }}";
+      containerB.appendChild(labelB);
+      containerB.appendChild(document.createElement("br"));
+
+      // Create input fields for each coefficient
+      for (let i = degree; i >= 0; i--) {
+        // For Polynomial A
+        let inputA = document.createElement("input");
+        inputA.type = "text";
+        inputA.className = "poly-coeff";
+        inputA.id = "coeffA_" + i;
+        inputA.style.width = "50px"; // Smaller input field
+        // On Space or Enter, focus next input (if available)
+        inputA.addEventListener("keydown", function(event) {
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            let next = document.getElementById("coeffA_" + (i - 1));
+            if (next) next.focus();
+          }
+        });
+        containerA.appendChild(inputA);
+
+        let spanA = document.createElement("span");
+        spanA.innerText = " x" + toSuperscript(i);
+        containerA.appendChild(spanA);
+
+        if (i > 0) {
+          containerA.appendChild(document.createTextNode(" + "));
+        }
+  
+        // For Polynomial B
+        let inputB = document.createElement("input");
+        inputB.type = "text";
+        inputB.className = "poly-coeff";
+        inputB.id = "coeffB_" + i;
+        inputB.style.width = "50px";
+        inputB.addEventListener("keydown", function(event) {
+          if (event.key === " " || event.key === "Enter") {
+            event.preventDefault();
+            let next = document.getElementById("coeffB_" + (i - 1));
+            if (next) next.focus();
+          }
+        });
+        containerB.appendChild(inputB);
+
+        let spanB = document.createElement("span");
+        spanB.innerText = " x" + toSuperscript(i);
+        containerB.appendChild(spanB);
+
+        if (i > 0) {
+          containerB.appendChild(document.createTextNode(" + "));
+        }
+      }
+    }
+
+    function toggleInputs() {
+      let operation = document.getElementById("operation").value;
+      let containerB = document.getElementById("polynomialInputContainerB");
+      containerB.style.display = (operation === "5") ? "none" : "block";
+    }
+
+    function toggleLanguageList() {
+      let languageList = document.getElementById("languageList");
+      if (languageList.style.display === "none" || languageList.style.display === "") {
+        languageList.style.display = "block";
+      } else {
+        languageList.style.display = "none";
+      }
+    }
+
+    // Dark Mode toggle function with persistence using localStorage
+    function toggleDarkMode() {
+      let body = document.body;
+      let isDark = body.classList.toggle("dark-mode");
+      localStorage.setItem("darkMode", isDark ? "true" : "false");
+      let label = document.getElementById("darkModeLabel");
+      if (label) {
+        label.innerText = isDark ? "{{ _('Dark Mode: On') }}" : "{{ _('Dark Mode: Off') }}";
+      }
+    }
+
+    // On page load, check localStorage for dark mode state and generate inputs
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        let label = document.getElementById("darkModeLabel");
+        if (label) {
+          label.innerText = "{{ _('Dark Mode: On') }}";
+        }
+        let darkToggle = document.getElementById("darkModeToggle");
+        if (darkToggle) darkToggle.checked = true;
+      }
+
+      generatePolynomialInput();
+      toggleInputs();
+
+      document.querySelector(".close").addEventListener("click", function () {
+        document.getElementById("accessDeniedModal").style.display = "none";
+      });
+
+      window.onclick = function(event) {
+        let modal = document.getElementById("accessDeniedModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    });
+
+    function performOperation() {
+      console.log("🔹 performOperation() triggered!");
+
+      let fieldDegree = document.getElementById("fieldDegree")?.value;
+      let degree = document.getElementById("degree")?.value;
+      let coefficientFormat = document.getElementById("coefficientFormat")?.value;
+      let outputFormat = document.getElementById("outputFormat")?.value;
+      let operation = document.getElementById("operation")?.value;
+
+      if (!fieldDegree || !degree || !coefficientFormat || !outputFormat || !operation) {
+        console.error("❌ Missing input values!", { fieldDegree, degree, coefficientFormat, outputFormat, operation });
+        alert("Error: One or more input fields are missing!");
+        return;
+      }
+
+      console.log("✔️ Inputs collected:", { fieldDegree, degree, coefficientFormat, outputFormat, operation });
+
+      let coefficientsA = [];
+      let coefficientsB = [];
+      for (let i = degree; i >= 0; i--) {
+        let coeffA = document.getElementById("coeffA_" + i)?.value.trim() || "0";
+        let coeffB = document.getElementById("coeffB_" + i)?.value.trim() || "0";
+        coefficientsA.push(coeffA);
+        coefficientsB.push(coeffB);
+      }
+
+      console.log("✔️ Coefficients collected:", { coefficientsA, coefficientsB });
+
+      fetch('/perform_operation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fieldDegree: fieldDegree,
+          degree: degree,
+          coefficientFormat: coefficientFormat,
+          outputFormat: outputFormat,
+          operation: operation,
+          coefficientsA: coefficientsA,
+          coefficientsB: coefficientsB
+        })
+      })
+      .then(response => {
+        console.log("✔️ Fetch request sent! Waiting for response...");
+        return response.json();
+      })
+      .then(data => {
+        console.log("✔️ Response received:", data);
+        if (data.error) {
+          document.getElementById("result").innerText = "Error: " + data.error;
+        } else {
+          document.getElementById("result").innerText = `Result: ${data.result}`;
+        }
+        document.getElementById("result").style.display = "block";
+      })
+      .catch(error => {
+        console.error("❌ Fetch error:", error);
+        document.getElementById("result").innerText = "An error occurred.";
+        document.getElementById("result").style.display = "block";
+      });
+    }
+
+    function fetchHistory() {
+      fetch('/get_history')
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          showAccessDenied("History access denied. Please log in or sign up.");
+        } else {
+          console.log("History Data:", data.history);
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching history:", error);
+      });
+    }
+
+    function showAccessDenied(message) {
+      document.getElementById("accessDeniedModal").style.display = "flex";
+      document.getElementById("historyModalMessage").innerText = message;
+    }
+
+    function closeAccessDenied() {
+      document.getElementById("accessDeniedModal").style.display = "none";
+    }
+
+    function toggleSettings() {
+      let settingsPanel = document.querySelector(".settings-panel");
+      settingsPanel.classList.toggle("show-settings");
+    }
+  </script>
+  
+</body>
+</html>
